@@ -1,0 +1,13 @@
+services:
+  ssh-mcp:
+    container_name: statefull-ssh-mcp
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      SSH_MCP_PRESETS: ${SSH_MCP_PRESETS:-}
+    volumes:
+      - ./src:/app/src:ro
+    tty: true
+    stdin_open: true
+    command: ["tail", "-f", "/dev/null"]
