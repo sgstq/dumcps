@@ -149,16 +149,50 @@ def disconnect() -> str:
     return "Disconnected."
 
 
+def _collect_command_output(
+    shell: paramiko.Channel, wait_seconds: float | None
+) -> str:
+    """Gather shell output for up to ``wait_seconds`` seconds.
+
+    When ``wait_seconds`` is ``None`` we return after a single buffer drain,
+    mirroring the previous behaviour. Otherwise we keep polling the channel
+    until the deadline elapses and then do a final drain to capture any prompt
+    that arrived right as the timeout expired.
+    """
+
+    if wait_seconds is None:
+        return _read_buffer(shell)
+
+    wait_seconds = max(0.0, wait_seconds)
+    deadline = time.monotonic() + wait_seconds
+    chunks: list[str] = []
+
+    while time.monotonic() < deadline:
+        chunk = _read_buffer(shell)
+        if chunk:
+            chunks.append(chunk)
+            continue
+        time.sleep(0.05)
+
+    trailing = _read_buffer(shell)
+    if trailing:
+        chunks.append(trailing)
+    return "".join(chunks)
+
+
 @mcp.tool()
-def send_command(command: str, wait_seconds: float = 2.0) -> str:
-    """Run a command (or respond to prompts) over the active shell."""
+def send_command(command: str, wait_seconds: float | None = 2.0) -> str:
+    """Run a command (or respond to prompts) over the active shell.
+
+    ``wait_seconds`` controls how long to keep listening for additional output.
+    Pass ``None`` to perform a single non-blocking drain of the shell buffer.
+    """
     shell = SESSION.shell
     if not shell:
         return "Error: No active connection. Use connect first."
 
     shell.send((command + "\n").encode("utf-8"))
-    time.sleep(max(0.1, wait_seconds))
-    return _read_buffer(shell)
+    return _collect_command_output(shell, wait_seconds)
 
 
 @mcp.tool()
@@ -168,7 +202,7 @@ def upload_file(local_path: str, remote_path: str) -> str:
     if not sftp:
         return "Error: No active connection."
 
-    source = Path(local_path).expanduser().resolve()
+    source = Path(local_path).expanduser().resolve(strict=False)
     if not source.exists():
         return f"Error: Local file '{source}' not found."
 
@@ -183,7 +217,7 @@ def download_file(remote_path: str, local_path: str) -> str:
     if not sftp:
         return "Error: No active connection."
 
-    target = Path(local_path).expanduser().resolve()
+    target = Path(local_path).expanduser().resolve(strict=False)
     target.parent.mkdir(parents=True, exist_ok=True)
     sftp.get(remote_path, str(target))
     return f"Downloaded {remote_path} -> {target}"
