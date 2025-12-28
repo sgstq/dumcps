@@ -11,6 +11,14 @@ pnpm link --global
 ```
 
 ## MCP Configuration
+### Via Claude add MCP command:
+```shell
+claude mcp add atlassian --scope user \
+  --env ATLASSIAN_URL="https://your-domain.atlassian.net" \
+  --env ATLASSIAN_EMAIL="your-email@company.com" \
+  --env ATLASSIAN_TOKEN="your-api-token" \
+  -- local-atlassian-mcp
+```
 
 ### Claude-compatible MCP Configuration (json)
 ```json
