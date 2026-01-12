@@ -12,6 +12,11 @@ pnpm link --global
 
 ## MCP Configuration
 
+### Claude-compatible MCP Configuration (cli)
+```bash
+claude mcp add --transport stdio atlassian --env ATLASSIAN_URL="https://your-company.atlassian.net" --env ATLASSIAN_EMAIL="your-email@company.com" --env ATLASSIAN_TOKEN="your-api-token" -- local-atlassian-mcp
+```
+
 ### Claude-compatible MCP Configuration (json)
 ```json
 {
