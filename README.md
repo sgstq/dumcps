@@ -13,3 +13,6 @@ ___
 ## What is included?
 - [Simple SSH MCP Server that supports stateful connections](./statefull-ssh/)
 - [Jira/Confluence MCP Server that have only the most basic read functionality](./local-atlassian-mcp/)
+- [Memory Curator plugin — keeps a compact, durable per-repo agent memory via Stop hook + background subagent](./memory-curator-plugin/)
+
+The memory curator package can also be installed as a global Codex skill for manual, repo-aware memory capture. See [memory-curator-plugin/README.md](./memory-curator-plugin/README.md).

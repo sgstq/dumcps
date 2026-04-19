@@ -1,1 +1,3 @@
 Refer to documents and guidelines in ./agents for instructions and as a critical source of truth on project-specific guidelines, code style, architecture principles, testing, deployment, and documentation practices.
+
+@.agents/memory/MEMORY.md

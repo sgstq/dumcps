@@ -1,0 +1,25 @@
+{
+  "name": "memory-curator",
+  "version": "0.1.0",
+  "description": "Curates a compact, durable per-repo agent memory at .agents/memory/ via a Stop hook and a background subagent.",
+  "author": {
+    "name": "dumcps",
+    "url": "https://github.com/dumcps"
+  },
+  "repository": "https://github.com/dumcps/memory-curator-plugin",
+  "license": "MIT",
+  "keywords": ["memory", "subagent", "hook", "claude-code"],
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/memory-check.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

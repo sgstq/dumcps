@@ -1,0 +1,15 @@
+{
+  "name": "memory-curator",
+  "owner": {
+    "name": "dumcps"
+  },
+  "metadata": {
+    "description": "Local marketplace for the memory-curator plugin (per-repo agent memory via Stop hook + background subagent)."
+  },
+  "plugins": [
+    {
+      "name": "memory-curator",
+      "source": "./"
+    }
+  ]
+}
